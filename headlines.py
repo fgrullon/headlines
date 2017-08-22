@@ -17,13 +17,14 @@ RSS_FEEDS = {'bbc' : 'http://feeds.bbci.co.uk/news/rss.xml',
 @app.route("/<publication>")
 def get_news(publication="bbc"):
 	query = request.args.get("publication")
+	ip = request.remote_addr
 	if not query or query.lower() not in RSS_FEEDS:
 		publication = "bbc"
 	else:
 		publication = query.lower()
 	feed = feedparser.parse(RSS_FEEDS[publication])
 	weather = get_weather("London, UK")
-	return  render_template("home.html", articles=feed['entries'], weather=weather)
+	return  render_template("home.html", articles=feed['entries'], weather=weather, ip=ip)
 
 def get_weather(query):
 	api_url = "http://api.openweathermap.org/data/2.5/weather?q={}&units=metric&appid=f5868f13b2a851e19b0e2de86cd08eeb"
