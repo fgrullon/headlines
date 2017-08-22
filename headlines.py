@@ -2,9 +2,11 @@ import json
 import urllib2
 import urllib
 import feedparser
+import re
 from flask import Flask 
 from flask import render_template
 from flask import request
+from urllib2 import urlopen
 
 app = Flask(__name__)
 
@@ -17,14 +19,14 @@ RSS_FEEDS = {'bbc' : 'http://feeds.bbci.co.uk/news/rss.xml',
 @app.route("/<publication>")
 def get_news(publication="bbc"):
 	query = request.args.get("publication")
-	ip = request.remote_addr
+	location = get_location()
 	if not query or query.lower() not in RSS_FEEDS:
 		publication = "bbc"
 	else:
 		publication = query.lower()
 	feed = feedparser.parse(RSS_FEEDS[publication])
-	weather = get_weather("London, UK")
-	return  render_template("home.html", articles=feed['entries'], weather=weather, ip=ip)
+	weather = get_weather(location)
+	return  render_template("home.html", articles=feed['entries'], weather=weather)
 
 def get_weather(query):
 	api_url = "http://api.openweathermap.org/data/2.5/weather?q={}&units=metric&appid=f5868f13b2a851e19b0e2de86cd08eeb"
@@ -39,6 +41,13 @@ def get_weather(query):
 			   "city" : parsed["name"]
 			  }
 	return weather
+
+def get_location():
+	api_url = 'http://ipinfo.io/json'
+	response = urlopen(api_url)
+	data = json.load(response)
+	location = data['region']+", "+data['country']
+	return location
 
 if __name__ == "__main__":
 	app.run(port=5000, debug=True)
