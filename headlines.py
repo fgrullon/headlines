@@ -19,7 +19,9 @@ RSS_FEEDS = {'bbc' : 'http://feeds.bbci.co.uk/news/rss.xml',
 @app.route("/<publication>")
 def get_news(publication="bbc"):
 	query = request.args.get("publication")
-	location = get_location()
+	ip_addr = request.environ["REMOTE_ADDR"]
+	print("IP ADDR: {}".format(ip_addr))
+	location = get_location(ip_addr)
 	if not query or query.lower() not in RSS_FEEDS:
 		publication = "bbc"
 	else:
@@ -42,11 +44,11 @@ def get_weather(query):
 			  }
 	return weather
 
-def get_location():
-	api_url = 'http://ipinfo.io/json'
+def get_location(ip):
+	api_url = 'http://ipinfo.io/'+ip+'/json'
 	response = urlopen(api_url)
 	data = json.load(response)
-	location = data['region']+", "+data['country']
+	location = data['city']+", "+data['country']
 	return location
 
 if __name__ == "__main__":
