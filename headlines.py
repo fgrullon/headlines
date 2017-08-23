@@ -28,7 +28,7 @@ def get_news(publication="bbc"):
 		publication = query.lower()
 	feed = feedparser.parse(RSS_FEEDS[publication])
 	weather = get_weather(location)
-	return  render_template("home.html", articles=feed['entries'], weather=weather)
+	return  render_template("home.html", articles=feed['entries'], weather=weather, location=location)
 
 def get_weather(query):
 	api_url = "http://api.openweathermap.org/data/2.5/weather?q={}&units=metric&appid=f5868f13b2a851e19b0e2de86cd08eeb"
