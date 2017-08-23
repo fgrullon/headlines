@@ -47,7 +47,7 @@ def get_home():
 	    currency_to = DEFAULTS['currency_to']
 	rate = get_rate(currency_from, currency_to)
 
-	return  render_template("home.html", articles=articles, weather=weather, location=location)
+	return  render_template("home.html", articles=articles, weather=weather, location=location, currency_from=currency_from, currency_to=currency_to, rate=rate)
 
 
 def get_news(query):
@@ -82,7 +82,8 @@ def get_location(ip):
 	api_url = 'http://ipinfo.io/'+ip+'/json'
 	response = urllib2.urlopen(api_url)
 	data = json.load(response)
-	location = data['city']+", "+data['country']
+	#location = data['city']+", "+data['country']
+	location = 'Santo Domingo, DO'
 	return location
 
 if __name__ == "__main__":
