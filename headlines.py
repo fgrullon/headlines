@@ -45,9 +45,9 @@ def get_home():
 	currency_to = request.args.get('currency_to')
 	if not currency_to:
 	    currency_to = DEFAULTS['currency_to']
-	rate = get_rate(currency_from, currency_to)
+	rate, currencies = get_rate(currency_from, currency_to)
 
-	return  render_template("home.html", articles=articles, weather=weather, location=location, currency_from=currency_from, currency_to=currency_to, rate=rate)
+	return  render_template("home.html", articles=articles, weather=weather, location=location, currency_from=currency_from, currency_to=currency_to, rate=rate, currencies=sorted(currencies))
 
 
 def get_news(query):
@@ -76,7 +76,7 @@ def get_rate(frm, to):
 	parsed = json.loads(all_currency).get('rates')
 	frm_rate = parsed.get(frm.upper())
 	to_rate = parsed.get(to.upper())
-	return to_rate/frm_rate
+	return (format(to_rate/frm_rate, '.2f'), parsed.keys())
 
 def get_location(ip):
 	api_url = 'http://ipinfo.io/'+ip+'/json'
